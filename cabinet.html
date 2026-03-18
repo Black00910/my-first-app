@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Wedding Invite</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    body {
+      margin:0;
+      font-family:sans-serif;
+      text-align:center;
+      background: linear-gradient(#ff9a9e, #fad0c4);
+      color:white;
+    }
+    .card {
+      margin-top:50px;
+    }
+    .timer {
+      font-size:30px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h1 id="names"></h1>
+  <p id="date"></p>
+  <p id="message"></p>
+  <div class="timer" id="timer"></div>
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
+
+// 🔗 ВСТАВЬ СЮДА СВОЙ BACKEND
+const API = "https://YOUR_BACKEND_URL";
+
+fetch(`${API}/invite/${id}`)
+.then(res => res.json())
+.then(data => {
+  document.getElementById("names").innerText = data.name1 + " & " + data.name2;
+  document.getElementById("date").innerText = data.date;
+  document.getElementById("message").innerText = data.message;
+
+  startTimer(data.date);
+});
+
+function startTimer(dateStr) {
+  const target = new Date(dateStr);
+
+  setInterval(() => {
+    const now = new Date();
+    const diff = target - now;
+
+    const d = Math.floor(diff / (1000*60*60*24));
+    const h = Math.floor(diff / (1000*60*60)%24);
+    const m = Math.floor(diff / (1000*60)%60);
+
+    document.getElementById("timer").innerText =
+      `${d}d ${h}h ${m}m`;
+  }, 1000);
+}
+</script>
+
+</body>
+</html>
